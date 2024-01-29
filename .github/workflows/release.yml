@@ -17,6 +17,18 @@
             steps:
                 - uses: actions/checkout@v4
 
+                - uses: actions-ecosystem/action-get-merged-pull-request@v1
+                  id: get-merged-pull-request
+                  with:
+                    github_token: ${{ github.token }}
+        
+                - uses: actions-ecosystem/action-release-label@v1
+                  id: release-label
+                  if: ${{ steps.get-merged-pull-request.outputs.title != null }}
+                  with:
+                    github_token: ${{ github.token }}
+                    labels: ${{ steps.get-merged-pull-request.outputs.labels }}
+
                 - uses: actions-ecosystem/action-get-latest-tag@v1
                   id: get-latest-tag
                   with:
@@ -35,4 +47,19 @@
                   with:
                     tag: ${{ steps.bump-semver.outputs.new_version }}
                     github_token: ${{ github.token }}
-          
+
+                - uses: actions/create-release@v1
+                  if: ${{ steps.release-label.outputs.level == 'major' || steps.release-label.outputs.level == 'minor' }}
+                  env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  with:
+                    tag_name: ${{ steps.bump-semver.outputs.new_version }}
+                    release_name: ${{ steps.bump-semver.outputs.new_version }}
+        
+                - uses: actions-ecosystem/action-create-comment@v1
+                  if: ${{ steps.bump-semver.outputs.new_version != null }}
+                  with:
+                    github_token: ${{ secrets.GITHUB_TOKEN }}
+                    number: ${{ steps.get-merged-pull-request.outputs.number }}
+                    body: |
+                      The new version [${{ steps.bump-semver.outputs.new_version }}](https://github.com/${{ github.repository }}/releases/tag/${{ steps.bump-semver.outputs.new_version }}) has been released :tada:
