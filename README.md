@@ -1,5 +1,8 @@
 # CalVersion
 
+[![release][release-badge]][release]
+[![license][license-badge]][license]
+
 This action generates a UTC-based [CalVer](https://calver.org/) in the format YYYY.0M0D.MICRO
 
 ## Usage

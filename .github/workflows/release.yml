@@ -1,0 +1,36 @@
+---
+    name: "Release"
+    
+    on:
+      release:
+        types:
+          - published
+    
+    jobs:
+        release:
+            name: Release with new version
+            runs-on: [ 'ubuntu-latest' ]
+            timeout-minutes: 5
+            permissions:
+                id-token: write
+                contents: read          
+            steps:
+                - name: Checkout source code
+                  uses: actions/checkout@v3
+                
+                - name: Get Previous tag
+                  id: previoustag
+                  uses: WyriHaximus/github-action-get-previous-tag@v1
+                  with:
+                    fallback: 0.0.0
+                
+                - name: New release tag
+                  id: newtag
+                  uses: ./
+                
+                - uses: actions-ecosystem/action-push-tag@v1
+                  with:
+                    tag: ${{ steps.newtag.outputs.new_version }}
+                    message: '${{ steps.newtag.outputs.new_version }}'
+
+            
