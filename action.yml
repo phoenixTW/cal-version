@@ -1,0 +1,35 @@
+name: 'CalVersion'
+description: Generates UTC-based Calendar version in the format YYYY.MMDD.MICRO. https://calver.org/
+outputs:
+  new_version:
+    description: "New generated version"
+    value: ${{ steps.generate-version.outputs.version }}
+inputs:
+  pre-release-label:
+    description: "Create a pre-release version with this label. https://semver.org/#spec-item-9"
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '>=1.21.0'
+    - name: Install calVar
+      shell: bash
+      run: |
+        go get github.com/k1LoW/calver
+
+    - id: generate-version
+      name: Generate new version
+      shell: bash
+      run: |
+        echo "Pre-release label: ${{ inputs.pre-release-label }}"
+        if [ -z "${{ inputs.pre-release-label }}" ]
+        then
+            calver --layout YYYY.0M0D.MICRO
+        else
+            echo "Generate version with a pre-release label"
+            calver --layout YYYY.0M0D.MICRO-MODIFIER --modifier "${{ inputs.pre-release-label }}"
+        fi
