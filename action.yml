@@ -23,7 +23,7 @@ runs:
     - name: Install calVar
       shell: bash
       run: |
-        go get github.com/k1LoW/calver
+        go install github.com/k1LoW/calver
 
     - id: generate-version
       name: Generate new version
