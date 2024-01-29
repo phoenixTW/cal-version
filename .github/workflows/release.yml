@@ -34,4 +34,5 @@
                 - uses: actions-ecosystem/action-push-tag@v1
                   with:
                     tag: ${{ steps.bump-semver.outputs.new_version }}
+                    github_token: ${{ github.token }}
           
