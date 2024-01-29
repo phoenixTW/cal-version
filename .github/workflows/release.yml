@@ -19,6 +19,8 @@
 
                 - uses: actions-ecosystem/action-get-latest-tag@v1
                   id: get-latest-tag
+                  with:
+                    github_token: ${{ github.token }}
                 
                 - name: New release tag
                   id: newtag
