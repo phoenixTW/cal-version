@@ -51,7 +51,6 @@
                     tag: ${{ steps.bump-semver.outputs.new_version }}
 
                 - uses: actions/create-release@v1
-                  if: ${{ steps.release-label.outputs.level == 'major' || steps.release-label.outputs.level == 'minor' }}
                   env:
                     GITHUB_TOKEN: ${{ github.token }}
                   with:
@@ -59,10 +58,8 @@
                     release_name: ${{ steps.bump-semver.outputs.new_version }}
         
                 - uses: actions-ecosystem/action-create-comment@v1
-                  if: ${{ steps.bump-semver.outputs.new_version != null }}
-                  env:
-                    GITHUB_TOKEN: ${{ github.token }}
                   with:
+                    github_token: ${{ github.token }}
                     number: ${{ steps.get-merged-pull-request.outputs.number }}
                     body: |
                       The new version [${{ steps.bump-semver.outputs.new_version }}](https://github.com/${{ github.repository }}/releases/tag/${{ steps.bump-semver.outputs.new_version }}) has been released :tada:
