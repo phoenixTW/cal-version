@@ -15,22 +15,21 @@
                 id-token: write
                 contents: read          
             steps:
-                - name: Checkout source code
-                  uses: actions/checkout@v3
-                
-                - name: Get Previous tag
-                  id: previoustag
-                  uses: WyriHaximus/github-action-get-previous-tag@v1
-                  with:
-                    fallback: 0.0.0
+                - uses: actions/checkout@v4
+
+                - uses: actions-ecosystem/action-get-latest-tag@v1
+                  id: get-latest-tag
                 
                 - name: New release tag
                   id: newtag
                   uses: ./
-                
+
+                - uses: actions-ecosystem/action-bump-semver@v1
+                  id: bump-semver
+                  with:
+                    current_version: ${{ steps.get-latest-tag.outputs.tag }}
+
                 - uses: actions-ecosystem/action-push-tag@v1
                   with:
-                    tag: ${{ steps.newtag.outputs.new_version }}
-                    message: '${{ steps.newtag.outputs.new_version }}'
-
-            
+                    tag: ${{ steps.bump-semver.outputs.new_version }}
+          
