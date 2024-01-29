@@ -13,9 +13,11 @@
             timeout-minutes: 5
             permissions:
                 id-token: write
-                contents: read          
+                contents: write
             steps:
                 - uses: actions/checkout@v4
+                  with:
+                    ssh-key: 
                 - run: cat .git/config
 
                 - uses: actions-ecosystem/action-get-merged-pull-request@v1
