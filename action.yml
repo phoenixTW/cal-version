@@ -1,5 +1,9 @@
 name: 'CalVersion'
 description: Generates UTC-based Calendar version in the format YYYY.MMDD.MICRO. https://calver.org/
+# https://actions-cool.github.io/github-action-branding/
+branding:
+  icon: 'check'
+  color: 'gray-dark'
 outputs:
   new_version:
     description: "New generated version"
